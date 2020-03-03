@@ -1,3 +1,5 @@
-function[x,y]=keisan(a,b,c)
-x=a+b;
-y=a-c;
+function keisan()
+
+prompt = 'What is the original value? ';
+x = input(prompt)
+y = x*10
