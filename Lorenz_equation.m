@@ -1,6 +1,7 @@
 function Lorenz_equation(n) 
 p=10;r=28;b=8/3;
 h = 0.01; % step
+T=[1:n];
 X=zeros(n); % èâä˙
 Y=zeros(n);
 Z=zeros(n);
@@ -15,6 +16,7 @@ for i=1:n-1
     Z(i+1) =  Z(i)+h*(X(i)*Y(i)-b*Z(i)); 
 
 end
+subplot(2,1,1);
 plot3(X,Y,Z);
 hold on
 
@@ -31,3 +33,7 @@ end
 
 plot3(X,Y,Z)
 hold off
+
+%subplot(2,1,2);
+%plot(T,X);
+

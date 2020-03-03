@@ -1,10 +1,10 @@
-function Logistic(n) 
+function Logistic(n,y_noise) 
 h = 0.01; % step
 t=linspace(0,h*n,n);
 X=linspace(0,0,n); 
 Y=linspace(0,0,n); 
 
-modein = 'What is mode? 0=amine,1=graph,2=‰Šú’l‰s•q«‚ÌŠm”F,3=•ªŠò}';
+modein = 'What is mode? 0=amine,1=graph,2=‰Šú’l‰s•q«‚ÌŠm”F,3=•ªŠò},4=ƒmƒCƒY‚ ‚è';
 mode = input(modein);
 
 if mode==0
@@ -83,4 +83,27 @@ xlabel('a');
 ylabel('xmaxmin');
 hold off
 
+end
+
+if mode==4
+for j=1:200
+    a=0.02*j;
+X(1) = 0.3;
+for i=1:n-1
+    X(i+1) =a*X(i)*(1-X(i));
+end
+
+plot(t,X);
+X(1) = 0.3+y_noise(1);
+for i=1:n-1
+    X(i+1) =a*X(i)*(1-X(i))+y_noise(i+1);
+end
+hold on
+plot(t,X);
+hold off
+xlabel(['a=',num2str(a)]);
+ylim([-0.1 1.1]);
+F=getframe;
+end
+movie(F)
 end
