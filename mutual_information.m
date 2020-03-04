@@ -13,42 +13,64 @@
 %            2020 May, fukuda shingo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Gotoda laboratory, Ritsumeikan University %%%%%%%%%%%%%%%
 
-function tauminima=mutual(X)
-load('Lorenz.mat');
-%もうすでにMATファイルによってXは定義されている
-    N = length(X);%データ数
-    xMax = max(X);%最大値
-    xMin = min(X);%最小値
-    P = 32;%拡張係数
-    tauend=50;%表示範囲??タウの終わり
+function mutual_information(X,Y) 
 
+%もうすでにMATファイルによってXは定義されている
+    Nx = length(X);%データ数
+    Ny = length(Y);%データ数
+    if Nx ~= Ny
+        return
+    end
+   xMax = max(X);%最大値
+    yMax = max(Y);%最大値
+    xyMax = max(xMax,yMax);%最大値
+    xMin = min(X);%最小値
+    yMin = min(Y);%最小値
+    xyMin = min(xMin,yMin);%最小値
+    P = 32;%分解能のようなもの  
+    Ex = zeros(P);
+    Ey = zeros(P);
+    Exy = zeros(P,P);
+tx = [1:Nx]';
+ty = [1:Ny]';
+subplot(2,1,1);
+plot(tx,X);
+hold on
+plot(ty,Y);
+hold off
+subplot(2,1,2);
+histogram(X);
+hold on
+histogram(Y);
+hold off
 %%% Normalization of time series data %%%
-    xNormalized = (X-xMin)/(xMax-xMin);%この書き方ちょっとキモい
+    xNormalized = (X-xyMin)/(xyMax-xyMin);%この書き方ちょっとキモい
+     yNormalized = (Y-xyMin)/(xyMax-xyMin);%この書き方ちょっとキモい
 %0～1の範囲での位置づけ
 %%% Frequency distribution %%%
-    Array = ceil(xNormalized*P) %: Round toward positive infinity大きい方の整数
-    Array(find(Array==0)) = 1; % If Array=0, Array=1 例外処X=0
-%%% Data save and graph %%%
-    ResultMI = zeros(N+1,1);
-    for Tau=1:tauend %N+1
-        ResultMI(Tau,1) = MutualInformation(Tau,N,Array,P);%y軸
-    end
-    DelayTime = [0:N]';%整数並びx軸 
-    plot(DelayTime(1:tauend), ResultMI(1:tauend),'-b','LineWidth',3);
-    %%%%%%%%%%%%%%%%%%%%%%%%%どうでもいいラベル
-    xlabel('DelayTime τ','FontSize',14)
-    ylabel('Mutual Information I(τ)','FontSize',14)
-    grid on
-    box on
-    ax = gca;
-    axis square
-    ax.BoxStyle = 'full';
-    set(gca,'FontSize',14)
-    set(gca,'FontName','Times','FontSize',20)
-    %%%%%%%%%%%%%%%%%%%%%%%%どうでもいいラベル
-    M = [DelayTime ResultMI]; 
-%     save mutual.txt M -ascii
-    tauminima=firstminima(M);%ans出してる
+    xArray = ceil(xNormalized*P); %: Round toward positive infinity大きい方の整数
+    xArray(find(xArray==0)) = 1; % If Array=0, Array=1 例外処X=0
+     yArray = ceil(yNormalized*P); %: Round toward positive infinity大きい方の整数
+    yArray(find(yArray==0)) = 1; % If Array=0, Array=1 例外処X=0
+%maker histo
+  for I=1:Nx
+        %Tauは遅れ時間、情報のわからなさが低くなるまでの情報を探す？
+        %N～Tauまでの情報はわかっている
+        
+        %遅れがない場合の情報
+        Ex(xArray(I)) = Ex(xArray(I)) + 1;
+        Ey(yArray(I)) = Ey(yArray(I)) + 1;
+        Exy(xArray(I),yArray(I)) = Exy(xArray(I),yArray(I)) + 1;
+  end
+ 
+  %  HX = MutualInformation(0,N,Array,P)
+  %  HY = MutualInformation(1,N,Array,P)
+  %  HXY=MutualInformation(2,N,Array,P)
+   % IXY=MutualInformation(3,N,Array,P)
+   %HXlY=MutualInformation(4,N,Array,P)
+   %HYlX=MutualInformation(5,N,Array,P)
+        
+
 end
     
 
@@ -61,7 +83,7 @@ end
 %          Pij :  The joint probability distribution function of I and J
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function MI = MutualInformation(Tau,N,Array,P);%計算関数やで
+function MI = MutualInformation(mode,N,Array,P);%計算関数やで
     %Tau繰り返しの回数
     %N最大のデータ数
     %Arrayはデータを整数化したもの(1-Pの中で)
@@ -69,20 +91,10 @@ function MI = MutualInformation(Tau,N,Array,P);%計算関数やで
     %%% Initialization %%%
     MI = 0;
     NumberOfData = N - Tau + 1;
-    Hi = zeros(P);
-    Hj = zeros(P);
-    Hij = zeros(P,P);
+  
     
     %%% Calculate the number of each partition data %%%
-    for I=Tau:N
-        %Tauは遅れ時間、情報のわからなさが低くなるまでの情報を探す？
-        %N～Tauまでの情報はわかっている
-        J=I-Tau+1;
-        %遅れがない場合の情報
-        Hi(Array(I)) = Hi(Array(I)) + 1;%カウントしてる
-        Hj(Array(J)) = Hj(Array(J)) + 1;%カウントしてる
-        Hij(Array(I),Array(J)) = Hij(Array(I),Array(J)) + 1;
-    end
+  
      % looki= Hi
     %    lookj = Hj
     %   lookij= Hij
@@ -95,6 +107,7 @@ function MI = MutualInformation(Tau,N,Array,P);%計算関数やで
     Pij = Hij / NumberOfData;
     
     %%% Caluculate the mutual information %%%
+    
     for I=1:P; 
         for J=1:P
             if Pij(I,J)>0
@@ -102,22 +115,6 @@ function MI = MutualInformation(Tau,N,Array,P);%計算関数やで
             end
         end;
     end
+    
 end
 
-function tauminima=firstminima(M)
-%fisrtminima 最初に極小値を取るものを探す
-%   遅れ時間τを決めるのに、平均相互情報量が最初に極小値を取るτを探すために作った
-%最小ではなく、極小である理由。
-%   mutual.mと併用できるようにしてある
-
-N=length(M);
-count=0;
-I=1;
-while(count<1)
-    I=I+1;
-        if (M(I-1,2)>M(I,2))&& (M(I,2)<M(I+1,2))
-           tauminima=M(I,1);
-       break
-    end
-end
-end
