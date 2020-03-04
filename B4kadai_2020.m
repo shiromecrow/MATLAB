@@ -17,7 +17,7 @@ set(0,'DefaultAxesYColorMode','manual');
 set(0,'DefaultAxesYColor',[0 0 0]);
 
 %% ホワイトガウスノイズの生成
-x = wgn(10000,1,0);
+x = wgn(100000,1,0);
 
 % 順列エントロピーの計算(ここ、やや複雑です)
 D=5;                        % 埋め込み次元
@@ -38,10 +38,27 @@ for nn=1:NN
     freq(np) = freq(np) + 1;
 end
 p = freq./NN;
-figure()
+%p_var=var(p)
+% p_mean=0;
+% p_var=0;
+% for i=1:120
+% p_mean=p_mean+i*p(i);
+% end
+% p_mean
+% for i=1:120
+% p_var=p_var+p(i)*(i-p_mean)^2;
+% end
+% p_var=p_var^(1/2)
+%subplot(2,1,1);
+%figure();
 bar(p);
 ylabel('$$\sl{p(\pi_i)}$$','interpreter','latex','FontSize',24); 
 xlabel('$$\sl{\pi_i}$$','interpreter','latex','FontSize',24); 
 p(find(p==0)) = 1;
 H = -sum(p.*log2(p));
 Hp = H./log2(DProd);
+%subplot(2,1,2);
+histogram(p);
+xlabel('$$\sl{p(\pi_i)}$$','interpreter','latex','FontSize',24); 
+ylabel('count','interpreter','latex','FontSize',24);
+
