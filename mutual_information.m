@@ -31,6 +31,14 @@ function mutual_information(X,Y)
     Ex = zeros(P);
     Ey = zeros(P);
     Exy = zeros(P,P);
+   HX = 0;
+   HY =0;
+   HXY=0;
+   IXY=0;
+   HXlY=0;
+   HYlX=0;
+    
+    
 tx = [1:Nx]';
 ty = [1:Ny]';
 subplot(2,1,1);
@@ -62,59 +70,41 @@ hold off
         Ey(yArray(I)) = Ey(yArray(I)) + 1;
         Exy(xArray(I),yArray(I)) = Exy(xArray(I),yArray(I)) + 1;
   end
- 
-  %  HX = MutualInformation(0,N,Array,P)
-  %  HY = MutualInformation(1,N,Array,P)
-  %  HXY=MutualInformation(2,N,Array,P)
-   % IXY=MutualInformation(3,N,Array,P)
-   %HXlY=MutualInformation(4,N,Array,P)
-   %HYlX=MutualInformation(5,N,Array,P)
-        
-
-end
-    
-
-%%%%%%%%%1%%%%%%%%%2%%%%%%%%%3%%%%%%%%%4%%%%%%%%%5%%%%%%%%%6%%%%%%%%%7%%%%%%%%%8%%%%%%%%%9%%%%%%%%0
-%   Outline : Calculation of entropy and Mutual Information
-%   Description :
-%   Type : 
-%   Args : Hi,Hj,Hij : Number of each partition data
-%          Pi,Pj : The marginal probability distribution functions of I and J respectively
-%          Pij :  The joint probability distribution function of I and J
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function MI = MutualInformation(mode,N,Array,P);%計算関数やで
-    %Tau繰り返しの回数
-    %N最大のデータ数
-    %Arrayはデータを整数化したもの(1-Pの中で)
-    %P拡張係数
-    %%% Initialization %%%
-    MI = 0;
-    NumberOfData = N - Tau + 1;
-  
-    
-    %%% Calculate the number of each partition data %%%
-  
-     % looki= Hi
-    %    lookj = Hj
-    %   lookij= Hij
-    
-    %%% Calculate the marginal probability distribution functions %%%
-    Pi = Hi / NumberOfData;%分数0～1にしてる
-    Pj = Hj / NumberOfData;
-    
-    %%% Calculate the joint probability distribution function %%%
-    Pij = Hij / NumberOfData;
-    
-    %%% Caluculate the mutual information %%%
-    
-    for I=1:P; 
-        for J=1:P
-            if Pij(I,J)>0
-                MI = MI + Pij(I,J) * log2(Pij(I,J)/(Pj(J)*Pi(I)));%エントロピーや！！
+  Px = Ex / Nx;
+  Py = Ey / Nx;
+  Pxy = Exy / Nx;
+     for I=1:P 
+            if Px(I)>0
+                HX = HX + Px(I) * log2(1/Px(I));
             end
-        end;
-    end
+        end
+  
+        for J=1:P
+            
+            if Py(J)>0
+                HY = HY + Py(J) * log2(1/Py(J));
+            end
+        end
+   for I=1:P
+        for J=1:P
+            if Pxy(I,J)>0
+                HXY = HXY + Pxy(I,J) * log2(1/Pxy(I,J));
+                IXY = IXY + Pxy(I,J) * log2(Pxy(I,J)/(Py(J)*Px(I)));
+            end
+        end
+   end
     
+   
+  HX
+  HY
+  HXY
+  IXY
+  HXlY=HX-IXY
+  HYlX=HY-IXY
+
+  
+
 end
+
+
 

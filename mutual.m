@@ -26,7 +26,7 @@ load('Lorenz.mat');
     xNormalized = (X-xMin)/(xMax-xMin);%この書き方ちょっとキモい
 %0～1の範囲での位置づけ
 %%% Frequency distribution %%%
-    Array = ceil(xNormalized*P) %: Round toward positive infinity大きい方の整数
+    Array = ceil(xNormalized*P); %: Round toward positive infinity大きい方の整数
     Array(find(Array==0)) = 1; % If Array=0, Array=1 例外処X=0
 %%% Data save and graph %%%
     ResultMI = zeros(N+1,1);
@@ -95,13 +95,15 @@ function MI = MutualInformation(Tau,N,Array,P);%計算関数やで
     Pij = Hij / NumberOfData;
     
     %%% Caluculate the mutual information %%%
-    for I=1:P; 
+    for I=1:P
         for J=1:P
             if Pij(I,J)>0
                 MI = MI + Pij(I,J) * log2(Pij(I,J)/(Pj(J)*Pi(I)));%エントロピーや！！
             end
-        end;
+        end
     end
+    
+    
 end
 
 function tauminima=firstminima(M)
