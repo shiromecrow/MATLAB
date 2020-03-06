@@ -17,27 +17,47 @@ set(0,'DefaultAxesYColorMode','manual');
 set(0,'DefaultAxesYColor',[0 0 0]);
 
 %% ホワイトガウスノイズの生成
-x = wgn(100000,1,0);
-
+display('What is distribution?');
+display('0=White gauss noise,ホワイトガウスノイズ');
+display('1=Lorenz,ローレンツ方程式');
+display('2=Rossler，レスラー方程式');
+display('3=Logistic，ロジスティック写像');
+modein = 'mode is ';
+mode = input(modein);
+n=10000;
+switch mode
+case {0}
+x = wgn(n,1,0);
+case {1}
+x=Lorenz_equation(n);
+case {2}
+x=Rossler_equation(n);
+case {3}
+x=Logistic(n);
+end
+t=[1:n];
+plot(t,x)
 % 順列エントロピーの計算(ここ、やや複雑です)
 D=5;                        % 埋め込み次元
 Tau=1;                      % 遅れ時間τ
-N = length(x);
-NN = N-Tau*(D-1);
-DProd = prod(1:D);
-freq = zeros(1,DProd);
+N = length(x);%データの長さ
+NN = N-Tau*(D-1);%取れるデータの数
+DProd = prod(1:D);%D!してるで
+freq = zeros(1,DProd);%D!×D!の行列
 for nn=1:NN
-    [~,xorder] = sort(x(nn:Tau:nn+Tau*(D-1)));
-    xkinds = 1:D;
-    np = 1;
+    [~,xorder] = sort(x(nn:Tau:nn+Tau*(D-1)));%x(nnからnn+Tau*(D-1)までのTau刻みのsort)
+    %[B,I] = sort(A)でIに順番のインデックスを制作,Bには並び替え後の配列を~はないことを示している．
+    xkinds = 1:D;%[1,2,3,4,5]を作る
+    np = 1;%初期値
     for d=1:D-1
-        hitorder = find(xkinds==xorder(d));
-        np = np + (hitorder-1)*prod(1:(D-d));
-        xkinds(:,hitorder) = [];
+        hitorder = find(xkinds==xorder(d));%d番目の数字
+        np = np + (hitorder-1)*prod(1:(D-d));%ここがランクオーダーパターンの決定
+        xkinds(:,hitorder) = [];%データの削除C(2,:) = []で2行目のすべてを削除
     end
+ 
     freq(np) = freq(np) + 1;
 end
-p = freq./NN;
+p = freq./NN;%.の意味は？
 %p_var=var(p)
 % p_mean=0;
 % p_var=0;
@@ -50,15 +70,15 @@ p = freq./NN;
 % end
 % p_var=p_var^(1/2)
 %subplot(2,1,1);
-%figure();
+figure();
 bar(p);
 ylabel('$$\sl{p(\pi_i)}$$','interpreter','latex','FontSize',24); 
 xlabel('$$\sl{\pi_i}$$','interpreter','latex','FontSize',24); 
 p(find(p==0)) = 1;
-H = -sum(p.*log2(p));
-Hp = H./log2(DProd);
-%subplot(2,1,2);
-histogram(p);
-xlabel('$$\sl{p(\pi_i)}$$','interpreter','latex','FontSize',24); 
-ylabel('count','interpreter','latex','FontSize',24);
+H = -sum(p.*log2(p))
+Hp = H./log2(DProd)
+% subplot(2,1,2);
+% histogram(p);
+% xlabel('$$\sl{p(\pi_i)}$$','interpreter','latex','FontSize',24); 
+% ylabel('count','interpreter','latex','FontSize',24);
 

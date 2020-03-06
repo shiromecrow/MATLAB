@@ -1,9 +1,9 @@
-function Rossler_equation(n) 
+function X=Rossler_equation(n) 
 a=0.2;b=0.2;c=5.7;
 h = 0.01; % step
-X=zeros(n); % ‰Šú
-Y=zeros(n);
-Z=zeros(n);
+X=linspace(0,0,n); 
+Y=linspace(0,0,n);
+Z=linspace(0,0,n);
 
 X(1) = 1;
 Y(1) = 1;

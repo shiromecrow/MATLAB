@@ -14,7 +14,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Gotoda laboratory, Ritsumeikan University %%%%%%%%%%%%%%%
 
 function tauminima=mutual(X)
-load('Lorenz.mat');
+%load('Lorenz.mat');
+X=Lorenz_equation(10000);
+X=X';
 %もうすでにMATファイルによってXは定義されている
     N = length(X);%データ数
     xMax = max(X);%最大値
@@ -34,6 +36,7 @@ load('Lorenz.mat');
         ResultMI(Tau,1) = MutualInformation(Tau,N,Array,P);%y軸
     end
     DelayTime = [0:N]';%整数並びx軸 
+    subplot(2,1,2);
     plot(DelayTime(1:tauend), ResultMI(1:tauend),'-b','LineWidth',3);
     %%%%%%%%%%%%%%%%%%%%%%%%%どうでもいいラベル
     xlabel('DelayTime τ','FontSize',14)
@@ -49,6 +52,18 @@ load('Lorenz.mat');
     M = [DelayTime ResultMI]; 
 %     save mutual.txt M -ascii
     tauminima=firstminima(M);%ans出してる
+    tauminima=18;
+    Y=X(tauminima+1:N-tauminima);
+     Z=X(tauminima*2+1:N);
+    for taut=0:2*tauminima-1
+    X(N-taut,:)=[];
+    end
+    Xnum = numel(X);
+    Ynum = numel(Y);
+    Znum = numel(Z);
+    subplot(2,1,1)
+    plot3(X,Y,Z);
+    
 end
     
 

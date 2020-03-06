@@ -1,4 +1,4 @@
-function Logistic(n,y_noise) 
+function X=Logistic(n,y_noise) 
 h = 0.01; % step
 t=linspace(0,h*n,n);
 X=linspace(0,0,n); 
@@ -86,6 +86,7 @@ hold off
 end
 
 if mode==4
+y_noise=wgn(n,1,-150);
 for j=1:200
     a=0.02*j;
 X(1) = 0.3;
@@ -103,7 +104,28 @@ plot(t,X);
 hold off
 xlabel(['a=',num2str(a)]);
 ylim([-0.1 1.1]);
-F=getframe;
+ F=getframe;
 end
 movie(F)
+end
+
+if mode==5
+y_noise=wgn(n,1,-150);
+    a=4;
+X(1) = 0.3;
+for i=1:n-1
+    X(i+1) =a*X(i)*(1-X(i));
+end
+
+plot(t,X);
+X(1) = 0.3+y_noise(1);
+for i=1:n-1
+    X(i+1) =a*X(i)*(1-X(i))+y_noise(i+1);
+end
+%hold on
+plot(t,X);
+%hold off
+xlabel(['a=',num2str(a)]);
+%ylim([-0.1 1.1]);
+
 end

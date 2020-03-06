@@ -1,11 +1,9 @@
-function Lorenz_equation(n) 
+function X=Lorenz_equation(n) 
 p=10;r=28;b=8/3;
 h = 0.01; % step
-T=[1:n];
-X=zeros(n); % èâä˙
-Y=zeros(n);
-Z=zeros(n);
-
+X=linspace(0,0,n); 
+Y=linspace(0,0,n);
+Z=linspace(0,0,n);
 X(1) = 1;
 Y(1) = 1;
 Z(1) = 1; 
@@ -16,7 +14,6 @@ for i=1:n-1
     Z(i+1) =  Z(i)+h*(X(i)*Y(i)-b*Z(i)); 
 
 end
-subplot(2,1,1);
 plot3(X,Y,Z);
 hold on
 
