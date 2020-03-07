@@ -1,4 +1,5 @@
 function X=Rossler_equation(n) 
+set_appearance();
 a=0.2;b=0.2;c=5.7;
 h = 0.01; % step
 X=linspace(0,0,n); 

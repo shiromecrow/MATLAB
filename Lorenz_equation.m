@@ -1,4 +1,5 @@
 function X=Lorenz_equation(n) 
+set_appearance();
 p=10;r=28;b=8/3;
 h = 0.01; % step
 X=linspace(0,0,n); 

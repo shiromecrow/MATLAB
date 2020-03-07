@@ -1,4 +1,5 @@
 function X=Logistic(n,y_noise) 
+set_appearance();
 h = 0.01; % step
 t=linspace(0,h*n,n);
 X=linspace(0,0,n); 

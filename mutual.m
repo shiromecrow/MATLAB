@@ -14,11 +14,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Gotoda laboratory, Ritsumeikan University %%%%%%%%%%%%%%%
 
 function tauminima=mutual(X)
-%load('Lorenz.mat');
-X=Lorenz_equation(10000);
-%X=Rossler_equation(10000);
-%X=Logistic(10000);
-X=X';
+display('What is distribution?');
+display('0=Lorenz,もらったやつ');
+display('1=Lorenz,ローレンツ方程式');
+display('2=Rossler，レスラー方程式');
+display('3=Logistic，ロジスティック写像');
+modein = 'mode is ';
+mode = input(modein);
+switch mode
+    case {0}
+        load('Lorenz.mat');
+    case {1}
+        X=Lorenz_equation(10000);
+        X=X';
+    case {2}
+        X=Rossler_equation(10000);
+        X=X';
+    case {3}
+        X=Logistic(10000);
+        X=X';
+    case{4}
+       % x=sin(2*pi/10000*t);
+end
+
 save('attractor.mat','X');
 %もうすでにMATファイルによってXは定義されている
     N = length(X);%データ数
@@ -55,8 +73,8 @@ save('attractor.mat','X');
     M = [DelayTime ResultMI]; 
 %     save mutual.txt M -ascii
     tauminima=firstminima(M);%ans出してる
-% tauminima=1000;
- make_attractor(tauminima,N);
+ %tauminima=2;
+ make_attractor(tauminima,N,mode);
 end
     
 
@@ -132,26 +150,30 @@ while(count<1)
 end
 end
 
-function make_attractor(tauminima,N)
+function make_attractor(tauminima,N,datamode)
 %attractorを制作する関数
-load('attractor.mat');
-   
     display('What is mode?');
 display('0=静止画');
 display('1=動画');
 modein = 'mode is ';
 mode = input(modein);
+load('attractor.mat');
        if mode ==0
-    Y=X(tauminima+1:N-tauminima);
-     Z=X(tauminima*2+1:N);
+           Xat=X(1:N-2*tauminima)
+           Yat=X(tauminima+1:N-tauminima);
+           Zat=X(tauminima*2+1:N);
     for taut=0:2*tauminima-1
     X(N-taut,:)=[];
     end
-   Xnum = numel(X);%配列数の確認
-    Ynum = numel(Y);%配列数の確認
-    Znum = numel(Z);%配列数の確認
+   Xnum = numel(Xat);%配列数の確認
+    Ynum = numel(Yat);%配列数の確認
+    Znum = numel(Zat);%配列数の確認
    % subplot(2,1,1)
-    plot3(X,Y,Z);
+   if datamode == 3
+   plot(Xat,Yat,'.r');
+   else
+    plot3(Xat,Yat,Zat);
+   end
     xlabel( 'x','FontSize',14);
     ylabel( 'y','FontSize',14);
     zlabel( 'z','FontSize',14);
@@ -159,17 +181,18 @@ mode = input(modein);
        end
     if mode ==1
     for tauminima=1:1:500
-        load('attractor.mat');
-    Y=X(tauminima+1:N-tauminima);
-     Z=X(tauminima*2+1:N);
-    for taut=0:2*tauminima-1
-    X(N-taut,:)=[];
-    end
-    Xnum = numel(X);%配列数の確認
-    Ynum = numel(Y);%配列数の確認
-    Znum = numel(Z);%配列数の確認
+        Xat=X(1:N-2*tauminima);
+    Yat=X(tauminima+1:N-tauminima);
+     Zat=X(tauminima*2+1:N);
+    Xnum = numel(Xat);%配列数の確認
+    Ynum = numel(Yat);%配列数の確認
+    Znum = numel(Zat);%配列数の確認
    % subplot(2,1,1)
-    plot3(X,Y,Z);
+   if datamode == 3
+   plot(Xat,Yat,'.r');
+   else
+    plot3(Xat,Yat,Zat);
+   end
     xlabel( 'x','FontSize',14);
     ylabel( 'y','FontSize',14);
     zlabel( 'z','FontSize',14);

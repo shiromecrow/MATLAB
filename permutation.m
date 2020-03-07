@@ -2,8 +2,8 @@
 % ホワイトガウスノイズのランクオーダーパターンの度数分布を調べる
 
 %% 出力される図のプロパティ(特に意味はないです)
-set(0,'defaultAxesFontSize',24)
-set(0,'defaultTextFontSize',24)
+set(0,'defaultAxesFontSize',15)
+set(0,'defaultTextFontSize',15)
 set(0,'defaultAxesFontName','Times New Roman')
 set(0,'DefaultTextFontName','Times New Roman')
 set(0,'DefaultAxesLineWidth', 1.5)
@@ -22,21 +22,24 @@ display('0=White gauss noise,ホワイトガウスノイズ');
 display('1=Lorenz,ローレンツ方程式');
 display('2=Rossler，レスラー方程式');
 display('3=Logistic，ロジスティック写像');
+display('4=sin_wave，sin波');
 modein = 'mode is ';
 mode = input(modein);
 n=10000;
-switch mode
-case {0}
-x = wgn(n,1,0);
-case {1}
-x=Lorenz_equation(n);
-case {2}
-x=Rossler_equation(n);
-case {3}
-x=Logistic(n);
-end
 t=[1:n];
-plot(t,x)
+switch mode
+    case {0}
+        x = wgn(n,1,0);
+    case {1}
+        x=Lorenz_equation(n);
+    case {2}
+        x=Rossler_equation(n);
+    case {3}
+        x=Logistic(n);
+    case{4}
+        x=sin(2*pi/10000*t);
+end
+plot(t,x);
 % 順列エントロピーの計算(ここ、やや複雑です)
 D=5;                        % 埋め込み次元
 Tau=1;                      % 遅れ時間τ
