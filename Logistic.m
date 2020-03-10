@@ -5,7 +5,7 @@ t=linspace(0,h*n,n);
 X=linspace(0,0,n); 
 Y=linspace(0,0,n); 
 
-modein = 'What is mode? 0=amine,1=graph,2=‰Šú’l‰s•q«‚ÌŠm”F,3=•ªŠò},4=ƒmƒCƒY‚ ‚è';
+modein = 'What is mode? 0=amine,1=graph,2=‰Šú’l‰s•q«‚ÌŠm”F,3=•ªŠò},4=ƒmƒCƒY‚ ‚è,6=aw’è';
 mode = input(modein);
 
 if mode==0
@@ -128,5 +128,19 @@ plot(t,X);
 %hold off
 xlabel(['a=',num2str(a)]);
 %ylim([-0.1 1.1]);
+
+end
+
+if mode==6
+    a=3;
+X(1) = 0.3;
+for i=1:n-1
+    X(i+1) =a*X(i)*(1-X(i));
+end
+plot(t,X);
+ylim([-0.1 1.1]);
+xlabel('t');
+ylabel('x');
+ylim([-0.1 1.1]);
 
 end

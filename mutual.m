@@ -31,7 +31,7 @@ switch mode
         X=Rossler_equation(10000);
         X=X';
     case {3}
-        X=Logistic(10000);
+        X=Logistic(1000);
         X=X';
     case{4}
        % x=sin(2*pi/10000*t);
@@ -43,7 +43,7 @@ save('attractor.mat','X');
     xMax = max(X);%最大値
     xMin = min(X);%最小値
     P = 32;%拡張係数
-    tauend=1000;%表示範囲??タウの終わり
+    tauend=N;%表示範囲??タウの終わり
 
 %%% Normalization of time series data %%%
     xNormalized = (X-xMin)/(xMax-xMin);%この書き方ちょっとキモい
@@ -72,8 +72,9 @@ save('attractor.mat','X');
     %%%%%%%%%%%%%%%%%%%%%%%%どうでもいいラベル
     M = [DelayTime ResultMI]; 
 %     save mutual.txt M -ascii
-    tauminima=firstminima(M);%ans出してる
- %tauminima=2;
+ %tauminima=firstminima(M)%ans出してる
+ tauin = 'tau is ';
+tauminima = input(tauin);
  make_attractor(tauminima,N,mode);
 end
     
@@ -159,43 +160,62 @@ modein = 'mode is ';
 mode = input(modein);
 load('attractor.mat');
        if mode ==0
-           Xat=X(1:N-2*tauminima)
-           Yat=X(tauminima+1:N-tauminima);
-           Zat=X(tauminima*2+1:N);
-    for taut=0:2*tauminima-1
-    X(N-taut,:)=[];
-    end
+           Xat=X(1:N-3*tauminima);
+           Yat=X(tauminima+1:N-2*tauminima);
+           Zat=X(tauminima*2+1:N-tauminima);
+           Vat=X(tauminima*3+1:N);
    Xnum = numel(Xat);%配列数の確認
     Ynum = numel(Yat);%配列数の確認
     Znum = numel(Zat);%配列数の確認
    % subplot(2,1,1)
    if datamode == 3
-   plot(Xat,Yat,'.r');
+      cob=linspace(0,0,100); 
+      web=linspace(0,0,100);
+      cob(1)=Xat(1);
+      web(1)=0;
+      cw=1;
+       for tt=1:2:N
+           cob(tt+1)=cob(tt);
+           web(tt+1)=Yat(cw);
+           cob(tt+2)=web(tt+1);
+           web(tt+2)=web(tt+1);
+           cw=find(Xat==web(tt+2));
+       end
+   plot(Xat,Yat,'.b');%
+   hold on
+   plot(cob,web);
+   hold off
    else
-    plot3(Xat,Yat,Zat);
+       scatter3(Xat,Yat,Zat,2,Vat,'filled') ;
+   % plot3(Xat,Yat,Zat);
    end
     xlabel( 'x','FontSize',14);
     ylabel( 'y','FontSize',14);
     zlabel( 'z','FontSize',14);
+    cb = colorbar;
+    cb.Label.String = 'v';
     legend(['tau=',num2str(tauminima)]);
        end
     if mode ==1
     for tauminima=1:1:500
-        Xat=X(1:N-2*tauminima);
-    Yat=X(tauminima+1:N-tauminima);
-     Zat=X(tauminima*2+1:N);
+           Xat=X(1:N-3*tauminima);
+           Yat=X(tauminima+1:N-2*tauminima);
+           Zat=X(tauminima*2+1:N-tauminima);
+           Vat=X(tauminima*3+1:N);
     Xnum = numel(Xat);%配列数の確認
     Ynum = numel(Yat);%配列数の確認
     Znum = numel(Zat);%配列数の確認
    % subplot(2,1,1)
    if datamode == 3
-   plot(Xat,Yat,'.r');
+   plot(Xat,Yat);%,'.r'
    else
-    plot3(Xat,Yat,Zat);
+   scatter3(Xat,Yat,Zat,2,Vat,'filled') 
    end
     xlabel( 'x','FontSize',14);
     ylabel( 'y','FontSize',14);
     zlabel( 'z','FontSize',14);
+      cb = colorbar;
+    cb.Label.String = 'v';
     legend(['tau=',num2str(tauminima)]);
      F=getframe;
     end
