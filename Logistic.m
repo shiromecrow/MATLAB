@@ -1,7 +1,7 @@
 function X=Logistic(n,y_noise) 
 set_appearance();
 h = 0.01; % step
-t=linspace(0,h*n,n);
+t=linspace(0,n,n);
 X=linspace(0,0,n); 
 Y=linspace(0,0,n); 
 
@@ -63,27 +63,50 @@ movie(F)
 end
 
 if mode==3
-    A=linspace(2.5,4.0,150);
-    M=linspace(0,0,150);
-    m=linspace(0,0,150);
-for j=1:150
-    a=2.5+0.01*(j-1);
+    n_over=200;
+    a_count=300;
+    if n<=n_over
+        return
+    end
+    lambda=linspace(0,0,a_count);
+    A=linspace(2.5,4.0,a_count);
+    B=linspace(2.5,4.0,a_count);
+    Xnext=linspace(0,0,n);
+    deltaX=0.01
+    for i=n_over:n-1
+    A=[A;B];
+    end
+A=A';
+for j=1:a_count
+    a=A(j);
     
 X(1) = 0.7;
+lambda(j)=0;
 for i=1:n-1
     X(i+1) =a*X(i)*(1-X(i));
+    Xnext(i+1) =a*(X(i)+deltaX)*(1-X(i)-deltaX);
+    dX=(Xnext(i+1)-X(i+1))/deltaX;
+    lambda(j)=lambda(j)+log(abs(dX));
 end
-M(j)=max(X);
-m(j)=min(X);
+lambda(j)=lambda(j)/(n-1);
+X2=X(n_over:n);
+if j==1
+    M=X(n_over:n);
+else
+M=[M;X2];
+end
 
 end
-plot(A,M);
-hold on
-plot(A,m)
+sz = size(A)
+sz2= size(M)
+subplot(2,1,1);
+plot(A,M,'.r');
 xlabel('a');
-ylabel('xmaxmin');
-hold off
-
+ylabel('x');
+subplot(2,1,2);
+plot(B,lambda,'.r');
+xlabel('a');
+ylabel('lambda[bit]');
 end
 
 if mode==4
