@@ -17,6 +17,9 @@ for i=1:n-1
 
 end
 plot3(X,Y,Z);
+xlabel('x');
+ylabel('y');
+zlabel('z');
 hold on
 
 X(1) = 1.1;
