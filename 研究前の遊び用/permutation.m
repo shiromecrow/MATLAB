@@ -16,7 +16,7 @@ set(0,'DefaultAxesXColor',[0 0 0]);
 set(0,'DefaultAxesYColorMode','manual');
 set(0,'DefaultAxesYColor',[0 0 0]);
 
-%% ホワイトガウスノイズの生成
+%% time series maker
 display('What is distribution?');
 display('0=White gauss noise,ホワイトガウスノイズ');
 display('1=Lorenz,ローレンツ方程式');
@@ -39,7 +39,7 @@ switch mode
     case{4}
         x=sin(2*pi/10000*t);
 end
-plot(t,x);
+%plot(t,x);
 % 順列エントロピーの計算(ここ、やや複雑です)
 D=5;                        % 埋め込み次元
 Tau=1;                      % 遅れ時間τ
@@ -61,18 +61,7 @@ for nn=1:NN
     freq(np) = freq(np) + 1;
 end
 p = freq./NN;%.の意味は？
-%p_var=var(p)
-% p_mean=0;
-% p_var=0;
-% for i=1:120
-% p_mean=p_mean+i*p(i);
-% end
-% p_mean
-% for i=1:120
-% p_var=p_var+p(i)*(i-p_mean)^2;
-% end
-% p_var=p_var^(1/2)
-%subplot(2,1,1);
+
 figure();
 bar(p);
 ylabel('$$\sl{p(\pi_i)}$$','interpreter','latex','FontSize',24); 

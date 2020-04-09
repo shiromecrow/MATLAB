@@ -45,13 +45,13 @@ save('attractor.mat','X');
     P = 32;%拡張係数
     tauend=N;%表示範囲??タウの終わり
 
-%%% Normalization of time series data %%%
+%% Normalization of time series data %%
     xNormalized = (X-xMin)/(xMax-xMin);%この書き方ちょっとキモい
 %0～1の範囲での位置づけ
-%%% Frequency distribution %%%
+%% Frequency distribution %%
     Array = ceil(xNormalized*P); %: Round toward positive infinity大きい方の整数
     Array(find(Array==0)) = 1; % If Array=0, Array=1 例外処X=0
-%%% Data save and graph %%%
+%% Data save and graph %%%
     ResultMI = zeros(N+1,1);
     for Tau=1:tauend %N+1
         ResultMI(Tau,1) = MutualInformation(Tau,N,Array,P);%y軸
@@ -59,7 +59,7 @@ save('attractor.mat','X');
     DelayTime = [0:N]';%整数並びx軸 
 %     subplot(2,1,2);
     plot(DelayTime(1:tauend), ResultMI(1:tauend),'-b','LineWidth',3);
-    %%%%%%%%%%%%%%%%%%%%%%%%%どうでもいいラベル
+%% どうでもいいラベル
     xlabel('DelayTime τ','FontSize',14)
     ylabel('Mutual Information I(τ)','FontSize',14)
     grid on
@@ -69,10 +69,10 @@ save('attractor.mat','X');
     ax.BoxStyle = 'full';
     set(gca,'FontSize',14)
     set(gca,'FontName','Times','FontSize',20)
-    %%%%%%%%%%%%%%%%%%%%%%%%どうでもいいラベル
-    M = [DelayTime ResultMI]; 
+    %%どうでもいいラベル
+    M = [DelayTime ResultMI];
 %     save mutual.txt M -ascii
- %tauminima=firstminima(M)%ans出してる
+ %% tauminima=firstminima(M)%ans出してる
  tauin = 'tau is ';
 tauminima = input(tauin);
  make_attractor(tauminima,N,mode);
